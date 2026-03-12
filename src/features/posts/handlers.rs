@@ -70,6 +70,32 @@ pub async fn get_posts(
     Ok(Json(posts))
 }
 
+pub async fn get_posts_by_category(
+    State(state): State<AppState>,
+    Path(category_id): Path<Uuid>, // BẮT LẤY ID TỪ URL BẰNG Path
+) -> Result<Json<Vec<Post>>, StatusCode> {
+    
+    // Dùng SQLx để lọc bài viết bằng mệnh đề WHERE
+    let posts = sqlx::query_as!(
+        Post,
+        r#"
+        SELECT id, author_id, category_id, title, slug, content_markdown, cover_image_url, published, created_at, updated_at 
+        FROM posts 
+        WHERE category_id = $1 
+        ORDER BY created_at DESC
+        "#,
+        category_id
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|e| {
+        println!("Lỗi khi lấy bài viết theo danh mục: {}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    Ok(Json(posts))
+}
+
 pub async fn edit_post(
     State(state): State<AppState>,
     claims: Claims,
