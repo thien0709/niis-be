@@ -10,7 +10,7 @@ pub struct Claims {
 
 #[derive(Deserialize)]
 pub struct RegisterPayload {
-    pub username: String, 
+    pub username: String,
     pub password: String,
 }
 
@@ -21,6 +21,15 @@ pub struct LoginPayload {
 }
 
 #[derive(Serialize)]
+pub struct UserInfo {
+    pub id: String,
+    pub username: String,
+    pub role: String,
+    pub status: String,
+}
+
+#[derive(Serialize)]
 pub struct AuthResponse {
     pub token: String,
+    pub user: UserInfo,
 }

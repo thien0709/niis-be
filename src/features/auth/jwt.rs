@@ -1,7 +1,7 @@
 use jsonwebtoken::{encode, decode, Header, Validation, EncodingKey, DecodingKey, errors::Error};
 use std::env;
 use std::time::{SystemTime, UNIX_EPOCH};
-use super::models::Claims; // Import Claims từ file bên cạnh
+use super::models::Claims;
 
 // Hàm tạo Token
 pub fn create_jwt(user_id: &str, role: &str) -> Result<String, Error> {
