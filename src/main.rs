@@ -13,8 +13,12 @@ use features::auth::handlers::{login, register};
 use features::categories::handlers::{
     create_category, delete_category, get_categories, update_category,
 };
-use features::posts::handlers::{create_post, delete_post, edit_post, get_posts, get_posts_by_category};
+use features::posts::handlers::{
+    create_post, delete_post, edit_post, get_post_by_slug, get_posts, get_posts_by_category,
+};
 use state::AppState;
+
+use crate::features::categories::create_category_service;
 
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
@@ -30,7 +34,10 @@ async fn main() -> Result<(), sqlx::Error> {
     println!("✅ Connected to database!");
 
     // Tạo AppState chứa pool database
-    let app_state = AppState { db: pool };
+    let app_state = AppState {
+        db: pool.clone(),
+        category_service: create_category_service(&pool),
+    };
 
     // Gom tất cả các route hiện tại vào một "nhóm"
     let api_routes = Router::new()
@@ -38,6 +45,7 @@ async fn main() -> Result<(), sqlx::Error> {
         .route("/auth/login", post(login))
         .route("/post", post(create_post))
         .route("/post/{id}", put(edit_post).delete(delete_post)) // Giữ nguyên ngoặc nhọn nhé!
+        .route("/posts/{slug}", get(get_post_by_slug))
         .route("/posts", get(get_posts))
         .route("/category", post(create_category))
         .route("/categories", get(get_categories))
