@@ -7,7 +7,6 @@ use crate::features::auth::Claims;
 
 #[derive(Clone)]
 pub struct CategoryService {
-    // Chỉ nắm giữ Interface (Trait)
     repo: Arc<dyn CategoryRepository>,
 }
 

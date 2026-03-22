@@ -19,6 +19,8 @@ use features::posts::handlers::{
 use state::AppState;
 
 use crate::features::categories::create_category_service;
+use crate::features::posts::create_post_service;
+use crate::features::auth::create_auth_service;
 
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
@@ -33,10 +35,10 @@ async fn main() -> Result<(), sqlx::Error> {
 
     println!("✅ Connected to database!");
 
-    // Tạo AppState chứa pool database
     let app_state = AppState {
-        db: pool.clone(),
         category_service: create_category_service(&pool),
+        post_service: create_post_service(&pool),
+        auth_service: create_auth_service(&pool),
     };
 
     // Gom tất cả các route hiện tại vào một "nhóm"
