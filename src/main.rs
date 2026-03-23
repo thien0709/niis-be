@@ -1,5 +1,5 @@
 use axum::Router;
-use axum::routing::{get, post, put};
+use axum::routing::{get, patch, post};
 use dotenvy::dotenv;
 use sqlx::postgres::PgPoolOptions;
 use std::env;
@@ -46,14 +46,14 @@ async fn main() -> Result<(), sqlx::Error> {
         .route("/auth/register", post(register))
         .route("/auth/login", post(login))
         .route("/post", post(create_post))
-        .route("/post/{id}", put(edit_post).delete(delete_post)) // Giữ nguyên ngoặc nhọn nhé!
+        .route("/post/{id}", patch(edit_post).delete(delete_post)) // Giữ nguyên ngoặc nhọn nhé!
         .route("/posts/{slug}", get(get_post_by_slug))
         .route("/posts", get(get_posts))
         .route("/category", post(create_category))
         .route("/categories", get(get_categories))
         .route(
             "/categories/{id}",
-            put(update_category).delete(delete_category),
+            patch(update_category).delete(delete_category),
         )
         .route("/categories/{id}/posts", get(get_posts_by_category));
     // Bọc nhóm đó vào tiền tố /api/v1 và gắn State
